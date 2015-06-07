@@ -11,8 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DaysLeft
 TEMPLATE = app
 
-win32:RC_ICONS += resources/days-left_32x32.ico
-
 SOURCES += src/main.cpp\
     src/MainWindow.cpp \
     src/DLEvent.cpp \
