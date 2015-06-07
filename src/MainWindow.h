@@ -44,6 +44,7 @@
 
 		private slots:
 			// File Menu
+            void onNewListAction();
 			void onOpenNewListAction();
 			void onOpenAppendToListAction();
 			void onSaveListAction();

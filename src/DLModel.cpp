@@ -33,6 +33,12 @@ DLModel::~DLModel() {
 	delete eventList;
 }
 
+void DLModel::clearList() {
+    beginResetModel();
+    eventList->clear();
+    endResetModel();
+}
+
 // Returns 1 more than the number of events in the list.
 // The last row of the table allows the user to enter a new event.
 int DLModel::rowCount(const QModelIndex &/*parent*/) const {

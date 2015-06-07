@@ -46,6 +46,10 @@ MainWindow::~MainWindow() {
 // Create the File and Help menus
 void MainWindow::createMenus() {
 	// File Menu Actions
+    QAction *newListAct = new QAction("&New Empty List", this);
+    newListAct->setShortcut(QKeySequence("Ctrl+N"));
+    connect(newListAct, SIGNAL(triggered()), this, SLOT(onNewListAction()));
+
     QAction *openNewListAct = new QAction("&Open New List...", this);
 	openNewListAct->setShortcut(QKeySequence("Ctrl+O"));
 	connect(openNewListAct, SIGNAL(triggered()), this, SLOT(onOpenNewListAction()));
@@ -65,6 +69,7 @@ void MainWindow::createMenus() {
 
 	// Create File Menu
     QMenu *fileMenu = new QMenu("&File", this);
+    fileMenu->addAction(newListAct);
 	fileMenu->addAction(openNewListAct);
 	fileMenu->addAction(openAppendToListAct);
 	fileMenu->addAction(saveListAct);
@@ -100,6 +105,15 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 /*** File menu actions ***/
+
+// Remove any events in current list and create a new, empty list.
+void MainWindow::onNewListAction() {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirm Action", "Remove events in current list and create a new, empty list?");
+
+    if (reply == QMessageBox::Yes)
+        dlView->getModel()->clearList();
+}
 
 // Load event list from an XML file. Will wipe existing list.
 void MainWindow::onOpenNewListAction() {
