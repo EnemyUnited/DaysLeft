@@ -20,5 +20,8 @@ Select the row(s) to remove and press the 'DELETE' key. **You must select the en
 ### Event Sorting 
 You can sort the event list by its **'Name'**, **'Date'** or **'Days Left'* in ascending or descending order by clicking on the respective column headers in the table.
 
+## License
+This software (source and binaries) is made available under the ISC license. See LICENSE file.
+
 ## Report Bugs / Feature Requests 
 Send bug reports and feature requests to enemyunited@gmail.com.
