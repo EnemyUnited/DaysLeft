@@ -268,7 +268,7 @@ bool DLModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row
 }
 
 // Populate event list with contents from an XML file
-bool DLModel::readEventsFromFile(QString &filePath, bool appendToList) {
+bool DLModel::readEventsFromFile(const QString &filePath, bool appendToList) {
     QFile file(filePath);
     if (!file.open(QFile::ReadOnly))
         return false;
@@ -302,7 +302,7 @@ bool DLModel::readEventsFromFile(QString &filePath, bool appendToList) {
 }
 
 // Write current event list to an XML file
-bool DLModel::writeEventsToFile(QString &filePath) {
+bool DLModel::writeEventsToFile(const QString &filePath) {
     QFile file(filePath);
     if (!file.open(QFile::WriteOnly | QFile::Text))
         return false;

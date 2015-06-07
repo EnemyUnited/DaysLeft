@@ -22,6 +22,8 @@
     #include <QMainWindow>
     #include "DLView.h"
 
+    #define MAX_RECENT_FILES 5
+
     class MainWindow : public QMainWindow {
         Q_OBJECT
 
@@ -31,27 +33,36 @@
 
         private:
             void createMenus();
-            void closeEvent(QCloseEvent *event);
+            void updateRecentFileActions();
             void onOpenAction(bool appendToList);
 
-            QAction *saveListAct;
+            void openFile(const QString &filePath, bool appendToList);
+            void setOpenedFile(const QString &filePath);
 
-            // Remember most recently opened file
-            QString openedFile;
-
-            // Widgets
-            DLView *dlView;
+            void closeEvent(QCloseEvent *event);
 
         private slots:
             // File Menu
             void onNewListAction();
             void onOpenNewListAction();
-            void onOpenAppendToListAction();
+            void onAppendToListAction();
             void onSaveListAction();
             void onSaveListAsAction();
+            void onOpenRecentFileAction();
 
             // Help Menu
             void onDLHelpAction();
             void onAboutAppAction();
+
+        private:
+            // Central widget
+            DLView *dlView;
+
+            QAction *saveListAct;
+            QAction *recentFilesSep;
+            QAction *recentFileActs[MAX_RECENT_FILES];
+
+            // Remember most recently opened file
+            QString openedFile;
     };
 #endif // MAINWINDOW_H

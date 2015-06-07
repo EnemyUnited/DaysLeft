@@ -43,9 +43,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 MainWindow::~MainWindow() {
 }
 
-// Create the File and Help menus
+// Create File and Help menus
 void MainWindow::createMenus() {
-    // File Menu Actions
+    // File menu actions
     QAction *newListAct = new QAction("&New Empty List", this);
     newListAct->setShortcut(QKeySequence("Ctrl+N"));
     connect(newListAct, SIGNAL(triggered()), this, SLOT(onNewListAction()));
@@ -54,9 +54,9 @@ void MainWindow::createMenus() {
     openNewListAct->setShortcut(QKeySequence("Ctrl+O"));
     connect(openNewListAct, SIGNAL(triggered()), this, SLOT(onOpenNewListAction()));
 
-    QAction *openAppendToListAct = new QAction("&Append to Current List...", this);
-    openAppendToListAct->setShortcut(QKeySequence("Shift+A"));
-    connect(openAppendToListAct, SIGNAL(triggered()), this, SLOT(onOpenAppendToListAction()));
+    QAction *appendToListAct = new QAction("&Append to Current List...", this);
+    appendToListAct->setShortcut(QKeySequence("Shift+A"));
+    connect(appendToListAct, SIGNAL(triggered()), this, SLOT(onAppendToListAction()));
 
     saveListAct = new QAction("&Save List", this);
     saveListAct->setShortcut(QKeySequence("Ctrl+S"));
@@ -67,15 +67,26 @@ void MainWindow::createMenus() {
     saveListAsAct->setShortcut(QKeySequence("Shift+S"));
     connect(saveListAsAct, SIGNAL(triggered()), this, SLOT(onSaveListAsAction()));
 
-    // Create File Menu
+    for (int i=0; i<MAX_RECENT_FILES; i++) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(onOpenRecentFileAction()));
+    }
+
+    // Create File menu
     QMenu *fileMenu = new QMenu("&File", this);
     fileMenu->addAction(newListAct);
     fileMenu->addAction(openNewListAct);
-    fileMenu->addAction(openAppendToListAct);
+    fileMenu->addAction(appendToListAct);
     fileMenu->addAction(saveListAct);
     fileMenu->addAction(saveListAsAct);
 
-    // Help Menu Actions
+    recentFilesSep = fileMenu->addSeparator();
+    for (int i=0; i<MAX_RECENT_FILES; i++)
+        fileMenu->addAction(recentFileActs[i]);
+    updateRecentFileActions();
+
+    // Help menu actions
     QAction *dlHelpAct = new QAction("DaysLeft Help", this);
     connect(dlHelpAct, SIGNAL(triggered()), this, SLOT(onDLHelpAction()));
 
@@ -85,7 +96,7 @@ void MainWindow::createMenus() {
     QAction *aboutQtAct = new QAction("About Qt", this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    // Create Help Menu
+    // Create Help menu
     QMenu *helpMenu = new QMenu("&Help", this);
     helpMenu->addAction(dlHelpAct);
     helpMenu->addAction(aboutAppAct);
@@ -94,6 +105,68 @@ void MainWindow::createMenus() {
     // Add menus to menuBar
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(helpMenu);
+}
+
+void MainWindow::updateRecentFileActions() {
+    QSettings settings("DaysLeft", "DaysLeft");
+    QStringList filePaths = settings.value("recentFilePaths").toStringList();
+    int numRecentFiles = filePaths.size();
+
+    for (int i=0; i<numRecentFiles; i++) {
+        QString fileName = QFileInfo(filePaths[i]).fileName();
+        recentFileActs[i]->setText("&"+QString::number(i+1)+" "+fileName);
+        recentFileActs[i]->setData(filePaths[i]);
+        recentFileActs[i]->setVisible(true);
+    }
+    for (int i=numRecentFiles; i<MAX_RECENT_FILES; i++)
+        recentFileActs[i]->setVisible(false);
+
+    recentFilesSep->setVisible(numRecentFiles > 0);
+}
+
+// Load event list from an XML file.
+// param appendToList: Appends to current list if true. Wipes otherwise.
+void MainWindow::onOpenAction(bool appendToList) {
+    QSettings settings("DaysLeft", "DaysLeft");
+    QString myPath = settings.value("lastFilePath", QVariant(QDir::homePath())).toString();
+    QString filePath = QFileDialog::getOpenFileName(this, "Open File", myPath, "XML files (*.xml)");
+    openFile(filePath, appendToList);
+}
+
+void MainWindow::openFile(const QString &filePath, bool appendToList) {
+    // Test to see if we can open the file
+    if (!filePath.isEmpty()) {
+        QFileInfo fileInfo(filePath);
+
+        if (!fileInfo.isDir()) {
+            QSettings settings("DaysLeft", "DaysLeft");
+            settings.setValue("lastFilePath", QVariant(filePath));
+
+            // Once opened, load the events from the file
+            if (dlView->getModel()->readEventsFromFile(filePath, appendToList)) {
+                setOpenedFile(filePath);
+                saveListAct->setEnabled(true);
+            }
+            else QMessageBox::warning(this, "Warning", "Invalid file chosen.");
+        }
+        else QMessageBox::warning(this, "Warning", "Selection is a directory and cannot be opened.");
+    }
+}
+
+// Remember currently opened file and update recently opened file list.
+void MainWindow::setOpenedFile(const QString &filePath) {
+    openedFile = filePath;
+
+    QSettings settings("DaysLeft", "DaysLeft");
+    QStringList filePaths = settings.value("recentFilePaths").toStringList();
+
+    filePaths.removeOne(filePath);
+    if (filePaths.size() == MAX_RECENT_FILES)
+        filePaths.removeLast();
+    filePaths.prepend(filePath);
+
+    settings.setValue("recentFilePaths", filePaths);
+    updateRecentFileActions();
 }
 
 // Triggered when the app is closed
@@ -122,33 +195,8 @@ void MainWindow::onOpenNewListAction() {
 
 // Load event list from an XML file.
 // Will append the data to the end of the current event list.
-void MainWindow::onOpenAppendToListAction() {
+void MainWindow::onAppendToListAction() {
     onOpenAction(true);
-}
-
-// Load event list from an XML file.
-// param appendToList: Appends to current list if true. Wipes otherwise.
-void MainWindow::onOpenAction(bool appendToList) {
-    QSettings settings("DaysLeft", "DaysLeft");
-    QString myPath = settings.value("lastFilePath", QVariant(QDir::homePath())).toString();
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), myPath, "XML files (*.xml)");
-
-    // Test to see if we can open the file
-    if (!filePath.isEmpty()) {
-        QFileInfo fileInfo(filePath);
-
-        if (!fileInfo.isDir()) {
-            settings.setValue("lastFilePath", QVariant(filePath));
-
-            // Once opened, load the events from the file
-            if (dlView->getModel()->readEventsFromFile(filePath, appendToList)) {
-                openedFile = filePath;
-                saveListAct->setEnabled(true);
-            }
-            else QMessageBox::warning(this, "Warning", "Invalid file chosen.");
-        }
-        else QMessageBox::warning(this, "Warning", "Selection is a directory and cannot be opened.");
-    }
 }
 
 // Save current list to the previously opened/saved XML file.
@@ -174,6 +222,15 @@ void MainWindow::onSaveListAsAction() {
             saveListAct->setEnabled(true);
         }
         else QMessageBox::warning(this, "Warning", "Unable to save events to file.");
+    }
+}
+
+void MainWindow::onOpenRecentFileAction() {
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        QMessageBox::StandardButton appendToList =
+                QMessageBox::question(this, "Append?", "Append to current list?");
+        openFile(action->data().toString(), appendToList==QMessageBox::Yes);
     }
 }
 

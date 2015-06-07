@@ -53,8 +53,8 @@
             QMimeData *mimeData(const QModelIndexList &indexes) const;
             bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
-            bool readEventsFromFile(QString &filePath, bool appendToList = true);
-            bool writeEventsToFile(QString &filePath);
+            bool readEventsFromFile(const QString &filePath, bool appendToList = true);
+            bool writeEventsToFile(const QString &filePath);
 
         private:
             QList<DLEvent> *eventList;
