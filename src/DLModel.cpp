@@ -34,9 +34,9 @@ DLModel::~DLModel() {
 }
 
 void DLModel::clearList() {
-    beginResetModel();
-    eventList->clear();
-    endResetModel();
+	beginResetModel();
+	eventList->clear();
+	endResetModel();
 }
 
 // Returns 1 more than the number of events in the list.
@@ -50,8 +50,8 @@ int DLModel::columnCount(const QModelIndex &/*parent*/) const {
 }
 
 QVariant DLModel::headerData(int section, Qt::Orientation orientation, int role) const {
-    // Display the column names in the table header row
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+	// Display the column names in the table header row
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		switch (section) {
 			case 0:
 				return QString("Event Name");
@@ -70,7 +70,7 @@ bool DLModel::setData(const QModelIndex &index, const QVariant &value, int role)
 	if (role == Qt::EditRole) {
 		int row = index.row(), col = index.column();
 
-        // Inserting a new event, by editing the name or date column
+		// Inserting a new event, by editing the name or date column
 		if (row == eventList->size()) {
 			beginInsertRows(index.parent(), row+1, row+1);
 			if (col == 0)
@@ -79,7 +79,7 @@ bool DLModel::setData(const QModelIndex &index, const QVariant &value, int role)
 				eventList->append(DLEvent("Name", value.toDate()));
 			endInsertRows();
 		}
-        // Editing an existing event by editing its name or date
+		// Editing an existing event by editing its name or date
 		else {
 			if (col == 0) {
 				const QString eventName = value.toString();
@@ -136,7 +136,7 @@ QVariant DLModel::data(const QModelIndex &index, int role) const {
 
 // Insert multiple events to model
 bool DLModel::insertRows(int row, int count, const QModelIndex &parent) {
-    // always insert before last row of table
+	// always insert before last row of table
 	if (row == eventList->size()+1)
 		row--;
 
@@ -199,7 +199,7 @@ Qt::ItemFlags DLModel::flags(const QModelIndex &index) const {
 	if (index.isValid())
 		 return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
 	 else
-         return Qt::ItemIsDropEnabled | defaultFlags;
+		 return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 Qt::DropActions DLModel::supportedDragActions() const {
@@ -274,31 +274,31 @@ bool DLModel::readEventsFromFile(QString &filePath, bool appendToList) {
 		return false;
 
 	QDomDocument doc("DaysLeft");
-    bool success = doc.setContent(&file);
-    file.close();
+	bool success = doc.setContent(&file);
+	file.close();
 
-    if (!success) return false;
+	if (!success) return false;
 
-    beginResetModel();
-    if (!appendToList)
-        eventList->clear();
+	beginResetModel();
+	if (!appendToList)
+		eventList->clear();
 
-    QDomElement docElem = doc.documentElement();
-    QDomNode node = docElem.firstChild();
+	QDomElement docElem = doc.documentElement();
+	QDomNode node = docElem.firstChild();
 
-    while (!node.isNull()) {
-        docElem = node.toElement();
-        if (!docElem.isNull()) {
-            eventList->append(DLEvent(docElem.attribute("name"),
-                                      QDate(docElem.attribute("year").toInt(),
-                                            docElem.attribute("month").toInt(),
-                                            docElem.attribute("day").toInt())));
-        }
-        node = node.nextSibling();
-    }
-    endResetModel();
+	while (!node.isNull()) {
+		docElem = node.toElement();
+		if (!docElem.isNull()) {
+			eventList->append(DLEvent(docElem.attribute("name"),
+									  QDate(docElem.attribute("year").toInt(),
+											docElem.attribute("month").toInt(),
+											docElem.attribute("day").toInt())));
+		}
+		node = node.nextSibling();
+	}
+	endResetModel();
 
-    return true;
+	return true;
 }
 
 // Write current event list to an XML file

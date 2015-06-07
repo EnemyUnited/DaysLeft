@@ -34,17 +34,17 @@
 			void closeEvent(QCloseEvent *event);
 			void onOpenAction(bool appendToList);
 
-            QAction *saveListAct;
+			QAction *saveListAct;
 
-            // Remember most recently opened file
-            QString openedFile;
+			// Remember most recently opened file
+			QString openedFile;
 
 			// Widgets
 			DLView *dlView;
 
 		private slots:
 			// File Menu
-            void onNewListAction();
+			void onNewListAction();
 			void onOpenNewListAction();
 			void onOpenAppendToListAction();
 			void onSaveListAction();

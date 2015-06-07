@@ -28,11 +28,11 @@ DLView::DLView(QWidget *parent) : QTableView(parent) {
 	setItemDelegate(dlDelegate);
 
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    setSelectionBehavior(QTableView::SelectRows);
+	setSelectionBehavior(QTableView::SelectRows);
 	setSortingEnabled(true);
 
-    setEditTriggers(QAbstractItemView::DoubleClicked |
-                    QAbstractItemView::SelectedClicked);
+	setEditTriggers(QAbstractItemView::DoubleClicked |
+					QAbstractItemView::SelectedClicked);
 }
 
 DLView::~DLView() {
@@ -45,7 +45,7 @@ DLModel *DLView::getModel() const {
 }
 
 void DLView::keyReleaseEvent(QKeyEvent *event) {
-    // Delete events (table rows) when user presses 'Delete' key
+	// Delete events (table rows) when user presses 'Delete' key
 	if (event->key() == Qt::Key_Delete) {
 		QModelIndexList selectedRows = selectionModel()->selectedRows();
 		if (selectedRows.size() > 0)

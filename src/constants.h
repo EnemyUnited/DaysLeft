@@ -19,7 +19,7 @@
 #ifndef CONSTANTS_H
 	#define CONSTANTS_H
 
-    #define APPVERSTR  "0.9"
-    #define APPDATESTR "June 6, 2015"
+	#define APPVERSTR  "0.9"
+	#define APPDATESTR "June 6, 2015"
 
 #endif // CONSTANTS_H

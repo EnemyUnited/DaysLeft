@@ -30,11 +30,11 @@
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    setWindowTitle("DaysLeft " APPVERSTR);
+	setWindowTitle("DaysLeft " APPVERSTR);
 	createMenus();
 
 	dlView = new DLView(this);
-    setCentralWidget(dlView);
+	setCentralWidget(dlView);
 
 	QSettings settings("DaysLeft", "DaysLeft");
 	resize(settings.value("winSize", QSize(320, 300)).toSize());
@@ -46,47 +46,47 @@ MainWindow::~MainWindow() {
 // Create the File and Help menus
 void MainWindow::createMenus() {
 	// File Menu Actions
-    QAction *newListAct = new QAction("&New Empty List", this);
-    newListAct->setShortcut(QKeySequence("Ctrl+N"));
-    connect(newListAct, SIGNAL(triggered()), this, SLOT(onNewListAction()));
+	QAction *newListAct = new QAction("&New Empty List", this);
+	newListAct->setShortcut(QKeySequence("Ctrl+N"));
+	connect(newListAct, SIGNAL(triggered()), this, SLOT(onNewListAction()));
 
-    QAction *openNewListAct = new QAction("&Open New List...", this);
+	QAction *openNewListAct = new QAction("&Open New List...", this);
 	openNewListAct->setShortcut(QKeySequence("Ctrl+O"));
 	connect(openNewListAct, SIGNAL(triggered()), this, SLOT(onOpenNewListAction()));
 
-    QAction *openAppendToListAct = new QAction("&Append to Current List...", this);
+	QAction *openAppendToListAct = new QAction("&Append to Current List...", this);
 	openAppendToListAct->setShortcut(QKeySequence("Shift+A"));
 	connect(openAppendToListAct, SIGNAL(triggered()), this, SLOT(onOpenAppendToListAction()));
 
-    saveListAct = new QAction("&Save List", this);
+	saveListAct = new QAction("&Save List", this);
 	saveListAct->setShortcut(QKeySequence("Ctrl+S"));
 	saveListAct->setEnabled(false);
 	connect(saveListAct, SIGNAL(triggered()), this, SLOT(onSaveListAction()));
 
-    QAction *saveListAsAct = new QAction("Save List &As...", this);
-    saveListAsAct->setShortcut(QKeySequence("Shift+S"));
+	QAction *saveListAsAct = new QAction("Save List &As...", this);
+	saveListAsAct->setShortcut(QKeySequence("Shift+S"));
 	connect(saveListAsAct, SIGNAL(triggered()), this, SLOT(onSaveListAsAction()));
 
 	// Create File Menu
-    QMenu *fileMenu = new QMenu("&File", this);
-    fileMenu->addAction(newListAct);
+	QMenu *fileMenu = new QMenu("&File", this);
+	fileMenu->addAction(newListAct);
 	fileMenu->addAction(openNewListAct);
 	fileMenu->addAction(openAppendToListAct);
 	fileMenu->addAction(saveListAct);
 	fileMenu->addAction(saveListAsAct);
 
 	// Help Menu Actions
-    QAction *dlHelpAct = new QAction("DaysLeft Help", this);
+	QAction *dlHelpAct = new QAction("DaysLeft Help", this);
 	connect(dlHelpAct, SIGNAL(triggered()), this, SLOT(onDLHelpAction()));
 
-    QAction *aboutAppAct = new QAction("About App", this);
+	QAction *aboutAppAct = new QAction("About App", this);
 	connect(aboutAppAct, SIGNAL(triggered()), this, SLOT(onAboutAppAction()));
 
-    QAction *aboutQtAct = new QAction("About Qt", this);
+	QAction *aboutQtAct = new QAction("About Qt", this);
 	connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 	// Create Help Menu
-    QMenu *helpMenu = new QMenu("&Help", this);
+	QMenu *helpMenu = new QMenu("&Help", this);
 	helpMenu->addAction(dlHelpAct);
 	helpMenu->addAction(aboutAppAct);
 	helpMenu->addAction(aboutQtAct);
@@ -108,11 +108,11 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 // Remove any events in current list and create a new, empty list.
 void MainWindow::onNewListAction() {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Confirm Action", "Remove events in current list and create a new, empty list?");
+	QMessageBox::StandardButton reply;
+	reply = QMessageBox::question(this, "Confirm Action", "Remove events in current list and create a new, empty list?");
 
-    if (reply == QMessageBox::Yes)
-        dlView->getModel()->clearList();
+	if (reply == QMessageBox::Yes)
+		dlView->getModel()->clearList();
 }
 
 // Load event list from an XML file. Will wipe existing list.
@@ -133,14 +133,14 @@ void MainWindow::onOpenAction(bool appendToList) {
 	QString myPath = settings.value("lastFilePath", QVariant(QDir::homePath())).toString();
 	QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), myPath, "XML files (*.xml)");
 
-    // Test to see if we can open the file
+	// Test to see if we can open the file
 	if (!filePath.isEmpty()) {
 		QFileInfo fileInfo(filePath);
 
 		if (!fileInfo.isDir()) {
 			settings.setValue("lastFilePath", QVariant(filePath));
 
-            // Once opened, load the events from the file
+			// Once opened, load the events from the file
 			if (dlView->getModel()->readEventsFromFile(filePath, appendToList)) {
 				openedFile = filePath;
 				saveListAct->setEnabled(true);
@@ -186,23 +186,23 @@ void MainWindow::onDLHelpAction() {
 	}
 
 	QTextStream in(&file);
-    QString htmlText = in.readAll();
+	QString htmlText = in.readAll();
 	file.close();
 
 	QTextEdit *helpPage = new QTextEdit();
 	helpPage->setReadOnly(true);
-    helpPage->setWindowTitle("DaysLeft " APPVERSTR " Help");
+	helpPage->setWindowTitle("DaysLeft " APPVERSTR " Help");
 	helpPage->setHtml(htmlText);
-    helpPage->resize(590, 440);
+	helpPage->resize(590, 440);
 	helpPage->show();
 }
 
 void MainWindow::onAboutAppAction() {
-    QMessageBox::about(this, "DaysLeft " APPVERSTR,
+	QMessageBox::about(this, "DaysLeft " APPVERSTR,
 					   "<div style='background-color: #FFF; text-align: center'>"
-							  "<table style='background-color: #FFF'><tr><td width='160px'>"
-							  "<b>Developed by:</b> Rafat Rashid<br>"
-                              "<b>Version:</b> " APPVERSTR " (" APPDATESTR ")<br><br>"
-							  "<a href='http://individual.utoronto.ca/rafatrashid/'>http://individual.utoronto.ca/rafatrashid/</a>"
-							  "</td></tr></table></div>");
+							"<table style='background-color: #FFF'><tr><td width='160px'>"
+							"<b>Developed by:</b> Rafat Rashid<br>"
+							"<b>Version:</b> " APPVERSTR " (" APPDATESTR ")<br><br>"
+							"<a href='http://individual.utoronto.ca/rafatrashid/'>http://individual.utoronto.ca/rafatrashid/</a>"
+							"</td></tr></table></div>");
 }

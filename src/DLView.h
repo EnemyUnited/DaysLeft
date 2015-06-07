@@ -25,7 +25,7 @@
 	#include <QTableView>
 	#include <QKeyEvent>
 
-    // This view displays the event list
+	// This view displays the event list
 	class DLView : public QTableView {
 		Q_OBJECT
 

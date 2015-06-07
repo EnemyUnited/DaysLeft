@@ -31,7 +31,7 @@
 			DLModel(QObject *parent = 0);
 			~DLModel();
 
-            void clearList();
+			void clearList();
 
 			int rowCount(const QModelIndex &parent) const;
 			int columnCount(const QModelIndex &parent) const;
