@@ -34,9 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	createMenus();
 
 	dlView = new DLView(this);
-	setCentralWidget(dlView);
-
-    //setWindowIcon(QIcon(":/resources/days-left_32x32.ico"));
+    setCentralWidget(dlView);
 
 	QSettings settings("DaysLeft", "DaysLeft");
 	resize(settings.value("winSize", QSize(320, 300)).toSize());
@@ -45,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 MainWindow::~MainWindow() {
 }
 
+// Create the File and Help menus
 void MainWindow::createMenus() {
 	// File Menu Actions
     QAction *openNewListAct = new QAction("&Open New List...", this);
@@ -92,6 +91,7 @@ void MainWindow::createMenus() {
 	menuBar()->addMenu(helpMenu);
 }
 
+// Triggered when the app is closed
 void MainWindow::closeEvent(QCloseEvent *event) {
 	QSettings settings("DaysLeft", "DaysLeft");
 	settings.setValue("winSize", size());
@@ -99,25 +99,34 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 	QWidget::closeEvent(event);
 }
 
+/*** File menu actions ***/
+
+// Load event list from an XML file. Will wipe existing list.
 void MainWindow::onOpenNewListAction() {
 	onOpenAction(false);
 }
 
+// Load event list from an XML file.
+// Will append the data to the end of the current event list.
 void MainWindow::onOpenAppendToListAction() {
 	onOpenAction(true);
 }
 
+// Load event list from an XML file.
+// param appendToList: Appends to current list if true. Wipes otherwise.
 void MainWindow::onOpenAction(bool appendToList) {
 	QSettings settings("DaysLeft", "DaysLeft");
 	QString myPath = settings.value("lastFilePath", QVariant(QDir::homePath())).toString();
 	QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), myPath, "XML files (*.xml)");
 
-	// Test to see if we can open the file.
+    // Test to see if we can open the file
 	if (!filePath.isEmpty()) {
 		QFileInfo fileInfo(filePath);
 
 		if (!fileInfo.isDir()) {
 			settings.setValue("lastFilePath", QVariant(filePath));
+
+            // Once opened, load the events from the file
 			if (dlView->getModel()->readEventsFromFile(filePath, appendToList)) {
 				openedFile = filePath;
 				saveListAct->setEnabled(true);
@@ -128,12 +137,16 @@ void MainWindow::onOpenAction(bool appendToList) {
 	}
 }
 
+// Save current list to the previously opened/saved XML file.
+// Existing file contents will be overwritten.
 void MainWindow::onSaveListAction() {
 	if (!dlView->getModel()->writeEventsToFile(openedFile))
 		QMessageBox::warning(this, "Warning", "Unable to save events to file."
 							 " Use 'SaveAs' to save to a different file.");
 }
 
+// Save current list to an XML file that the user selects.
+// Existing file contents will be overwritten.
 void MainWindow::onSaveListAsAction() {
 	QSettings settings("DaysLeft", "DaysLeft");
 	QString myPath = settings.value("lastFilePath", QVariant(QDir::homePath())).toString();
@@ -150,6 +163,7 @@ void MainWindow::onSaveListAsAction() {
 	}
 }
 
+// Displays the help html page in a modal window.
 void MainWindow::onDLHelpAction() {
 	QFile file(":/resources/helpPage.html");
 	if (!file.open(QFile::ReadOnly)) {
@@ -158,8 +172,7 @@ void MainWindow::onDLHelpAction() {
 	}
 
 	QTextStream in(&file);
-	QString htmlText = in.readAll();
-
+    QString htmlText = in.readAll();
 	file.close();
 
 	QTextEdit *helpPage = new QTextEdit();

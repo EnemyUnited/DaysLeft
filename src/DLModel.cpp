@@ -33,6 +33,8 @@ DLModel::~DLModel() {
 	delete eventList;
 }
 
+// Returns 1 more than the number of events in the list.
+// The last row of the table allows the user to enter a new event.
 int DLModel::rowCount(const QModelIndex &/*parent*/) const {
 	return eventList->size()+1;
 }
@@ -42,7 +44,8 @@ int DLModel::columnCount(const QModelIndex &/*parent*/) const {
 }
 
 QVariant DLModel::headerData(int section, Qt::Orientation orientation, int role) const {
-	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+    // Display the column names in the table header row
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		switch (section) {
 			case 0:
 				return QString("Event Name");
@@ -56,10 +59,12 @@ QVariant DLModel::headerData(int section, Qt::Orientation orientation, int role)
 	return QAbstractTableModel::headerData(section, orientation, role);
 }
 
+// Inserting a new event or editing an existing one in the model
 bool DLModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (role == Qt::EditRole) {
 		int row = index.row(), col = index.column();
 
+        // Inserting a new event, by editing the name or date column
 		if (row == eventList->size()) {
 			beginInsertRows(index.parent(), row+1, row+1);
 			if (col == 0)
@@ -68,6 +73,7 @@ bool DLModel::setData(const QModelIndex &index, const QVariant &value, int role)
 				eventList->append(DLEvent("Name", value.toDate()));
 			endInsertRows();
 		}
+        // Editing an existing event by editing its name or date
 		else {
 			if (col == 0) {
 				const QString eventName = value.toString();
@@ -83,6 +89,7 @@ bool DLModel::setData(const QModelIndex &index, const QVariant &value, int role)
 	return false;
 }
 
+// Retrieving events from the model, used to render data in the table
 QVariant DLModel::data(const QModelIndex &index, int role) const {
 	int row = index.row(), col = index.column();
 	bool lastRow = row == eventList->size();
@@ -121,8 +128,9 @@ QVariant DLModel::data(const QModelIndex &index, int role) const {
 	return QVariant();
 }
 
+// Insert multiple events to model
 bool DLModel::insertRows(int row, int count, const QModelIndex &parent) {
-	// always insert before last row of table
+    // always insert before last row of table
 	if (row == eventList->size()+1)
 		row--;
 
@@ -134,6 +142,7 @@ bool DLModel::insertRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
+// Remove multiple events from model
 bool DLModel::removeRows(int row, int count, const QModelIndex &parent) {
 	// don't delete the last row
 	if (row+count-1 == eventList->size())
@@ -151,6 +160,7 @@ bool DLModel::removeRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
+// Sort the event list by name, date, or days left
 void DLModel::sort(int column, Qt::SortOrder order) {
 	beginResetModel();
 	if (column == 0) { // sort by name
@@ -174,6 +184,8 @@ void DLModel::sort(int column, Qt::SortOrder order) {
 	endResetModel();
 }
 
+// Define table cell properties. The 'Days Left' is not editable.
+// Allow drag and drop (to enable reordering of events).
 Qt::ItemFlags DLModel::flags(const QModelIndex &index) const {
 	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
 	if (index.column() != 2) defaultFlags |= Qt::ItemIsEditable;
@@ -181,10 +193,7 @@ Qt::ItemFlags DLModel::flags(const QModelIndex &index) const {
 	if (index.isValid())
 		 return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
 	 else
-		 return Qt::ItemIsDropEnabled | defaultFlags;
-
-	//if (index.column() == 2) return QAbstractTableModel::flags(index);
-	//else return (Qt::ItemIsEditable | QAbstractTableModel::flags(index));
+         return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 Qt::DropActions DLModel::supportedDragActions() const {
@@ -214,16 +223,13 @@ QMimeData *DLModel::mimeData(const QModelIndexList &indexes) const {
 	return mimeData;
 }
 
-bool DLModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+bool DLModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int /*column*/, const QModelIndex &parent) {
 	qDebug() << "Action: " << action;
 	if (action == Qt::IgnoreAction)
 		return true;
 
 	if (!data->hasFormat("application/vnd.text.list"))
 			return false;
-
-	//if (column > 0)
-	//	return false;
 
 	int beginRow;
 	if (row != -1)
@@ -255,39 +261,41 @@ bool DLModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row
 	return true;
 }
 
+// Populate event list with contents from an XML file
 bool DLModel::readEventsFromFile(QString &filePath, bool appendToList) {
 	QFile file(filePath);
 	if (!file.open(QFile::ReadOnly))
 		return false;
 
 	QDomDocument doc("DaysLeft");
-	if (!doc.setContent(&file)) {
-		file.close();
-		return false;
-	}
-	file.close();
+    bool success = doc.setContent(&file);
+    file.close();
 
-	beginResetModel();
-	if (!appendToList)
-		eventList->clear();
+    if (!success) return false;
 
-	QDomElement docElem = doc.documentElement();
-	QDomNode node = docElem.firstChild();
-	while (!node.isNull()) {
-		docElem = node.toElement();
-		if (!docElem.isNull()) {
-			eventList->append(DLEvent(docElem.attribute("name"),
-									  QDate(docElem.attribute("year").toInt(),
-											docElem.attribute("month").toInt(),
-											docElem.attribute("day").toInt())));
-		}
-		node = node.nextSibling();
-	}
-	endResetModel();
+    beginResetModel();
+    if (!appendToList)
+        eventList->clear();
 
-	return true;
+    QDomElement docElem = doc.documentElement();
+    QDomNode node = docElem.firstChild();
+
+    while (!node.isNull()) {
+        docElem = node.toElement();
+        if (!docElem.isNull()) {
+            eventList->append(DLEvent(docElem.attribute("name"),
+                                      QDate(docElem.attribute("year").toInt(),
+                                            docElem.attribute("month").toInt(),
+                                            docElem.attribute("day").toInt())));
+        }
+        node = node.nextSibling();
+    }
+    endResetModel();
+
+    return true;
 }
 
+// Write current event list to an XML file
 bool DLModel::writeEventsToFile(QString &filePath) {
 	QFile file(filePath);
 	if (!file.open(QFile::WriteOnly | QFile::Text))

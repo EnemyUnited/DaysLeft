@@ -22,6 +22,7 @@
 	#include <QString>
 	#include <QDate>
 
+    // Defines a single 'Days Left' event
 	class DLEvent {
 		public:
 			DLEvent();
@@ -35,7 +36,7 @@
 
 			int getDaysLeft() const;
 
-			// Sorting Methods
+            // Comparator methods needed for sorting a list of events
 			static bool cmpNameAscending(const DLEvent &event1, const DLEvent &event2);
 			static bool cmpNameDescending(const DLEvent &event1, const DLEvent &event2);
 
@@ -46,7 +47,7 @@
 			static bool cmpDaysLeftDescending(const DLEvent &event1, const DLEvent &event2);
 
 		private:
-			QString name;
-			QDate date;
+            QString name; // event name
+            QDate date;   // when the event occurs
 	};
 #endif // DLEVENT_H
