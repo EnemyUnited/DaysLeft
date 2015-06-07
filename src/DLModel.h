@@ -17,46 +17,46 @@
 ****************************************************************************/
 
 #ifndef DLMODEL_H
-	#define DLMODEL_H
+    #define DLMODEL_H
 
-	#include "DLEvent.h"
-	#include <QAbstractTableModel>
-	#include <QList>
-	#include <QMimeData>
+    #include "DLEvent.h"
+    #include <QAbstractTableModel>
+    #include <QList>
+    #include <QMimeData>
 
-	class DLModel : public QAbstractTableModel {
-		Q_OBJECT
+    class DLModel : public QAbstractTableModel {
+        Q_OBJECT
 
-		public:
-			DLModel(QObject *parent = 0);
-			~DLModel();
+        public:
+            DLModel(QObject *parent = 0);
+            ~DLModel();
 
-			void clearList();
+            void clearList();
 
-			int rowCount(const QModelIndex &parent) const;
-			int columnCount(const QModelIndex &parent) const;
+            int rowCount(const QModelIndex &parent) const;
+            int columnCount(const QModelIndex &parent) const;
 
-			QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+            QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-			bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-			QVariant data(const QModelIndex &index, int role) const;
+            bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+            QVariant data(const QModelIndex &index, int role) const;
 
-			bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
-			bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+            bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
+            bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
-			void sort(int column, Qt::SortOrder order);
+            void sort(int column, Qt::SortOrder order);
 
-			Qt::ItemFlags flags(const QModelIndex &index) const;
-			Qt::DropActions supportedDragActions() const;
+            Qt::ItemFlags flags(const QModelIndex &index) const;
+            Qt::DropActions supportedDragActions() const;
 
-			QStringList mimeTypes() const;
-			QMimeData *mimeData(const QModelIndexList &indexes) const;
-			bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+            QStringList mimeTypes() const;
+            QMimeData *mimeData(const QModelIndexList &indexes) const;
+            bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
-			bool readEventsFromFile(QString &filePath, bool appendToList = true);
-			bool writeEventsToFile(QString &filePath);
+            bool readEventsFromFile(QString &filePath, bool appendToList = true);
+            bool writeEventsToFile(QString &filePath);
 
-		private:
-			QList<DLEvent> *eventList;
-	};
+        private:
+            QList<DLEvent> *eventList;
+    };
 #endif // DLMODEL_H

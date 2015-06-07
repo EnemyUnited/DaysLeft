@@ -21,37 +21,37 @@
 #include <QDebug>
 
 DLView::DLView(QWidget *parent) : QTableView(parent) {
-	dlModel = new DLModel();
-	setModel(dlModel);
+    dlModel = new DLModel();
+    setModel(dlModel);
 
-	dlDelegate = new DLDelegate();
-	setItemDelegate(dlDelegate);
+    dlDelegate = new DLDelegate();
+    setItemDelegate(dlDelegate);
 
-	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setSelectionBehavior(QTableView::SelectRows);
-	setSortingEnabled(true);
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    setSelectionBehavior(QTableView::SelectRows);
+    setSortingEnabled(true);
 
-	setEditTriggers(QAbstractItemView::DoubleClicked |
-					QAbstractItemView::SelectedClicked);
+    setEditTriggers(QAbstractItemView::DoubleClicked |
+                    QAbstractItemView::SelectedClicked);
 }
 
 DLView::~DLView() {
-	delete dlModel;
-	delete dlDelegate;
+    delete dlModel;
+    delete dlDelegate;
 }
 
 DLModel *DLView::getModel() const {
-	return dlModel;
+    return dlModel;
 }
 
 void DLView::keyReleaseEvent(QKeyEvent *event) {
-	// Delete events (table rows) when user presses 'Delete' key
-	if (event->key() == Qt::Key_Delete) {
-		QModelIndexList selectedRows = selectionModel()->selectedRows();
-		if (selectedRows.size() > 0)
-			dlModel->removeRows(selectedRows.first().row(),
-								selectedRows.size(),
-								selectedRows.first().parent());
-	}
-	event->accept();
+    // Delete events (table rows) when user presses 'Delete' key
+    if (event->key() == Qt::Key_Delete) {
+        QModelIndexList selectedRows = selectionModel()->selectedRows();
+        if (selectedRows.size() > 0)
+            dlModel->removeRows(selectedRows.first().row(),
+                                selectedRows.size(),
+                                selectedRows.first().parent());
+    }
+    event->accept();
 }

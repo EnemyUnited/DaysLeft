@@ -17,41 +17,41 @@
 ****************************************************************************/
 
 #ifndef MAINWINDOW_H
-	#define MAINWINDOW_H
+    #define MAINWINDOW_H
 
-	#include <QMainWindow>
-	#include "DLView.h"
+    #include <QMainWindow>
+    #include "DLView.h"
 
-	class MainWindow : public QMainWindow {
-		Q_OBJECT
+    class MainWindow : public QMainWindow {
+        Q_OBJECT
 
-		public:
-			MainWindow(QWidget *parent = 0);
-			~MainWindow();
+        public:
+            MainWindow(QWidget *parent = 0);
+            ~MainWindow();
 
-		private:
-			void createMenus();
-			void closeEvent(QCloseEvent *event);
-			void onOpenAction(bool appendToList);
+        private:
+            void createMenus();
+            void closeEvent(QCloseEvent *event);
+            void onOpenAction(bool appendToList);
 
-			QAction *saveListAct;
+            QAction *saveListAct;
 
-			// Remember most recently opened file
-			QString openedFile;
+            // Remember most recently opened file
+            QString openedFile;
 
-			// Widgets
-			DLView *dlView;
+            // Widgets
+            DLView *dlView;
 
-		private slots:
-			// File Menu
-			void onNewListAction();
-			void onOpenNewListAction();
-			void onOpenAppendToListAction();
-			void onSaveListAction();
-			void onSaveListAsAction();
+        private slots:
+            // File Menu
+            void onNewListAction();
+            void onOpenNewListAction();
+            void onOpenAppendToListAction();
+            void onSaveListAction();
+            void onSaveListAsAction();
 
-			// Help Menu
-			void onDLHelpAction();
-			void onAboutAppAction();
-	};
+            // Help Menu
+            void onDLHelpAction();
+            void onAboutAppAction();
+    };
 #endif // MAINWINDOW_H

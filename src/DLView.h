@@ -17,29 +17,29 @@
 ****************************************************************************/
 
 #ifndef DLVIEW_H
-	#define DLVIEW_H
+    #define DLVIEW_H
 
-	#include "DLModel.h"
-	#include "DLDelegate.h"
+    #include "DLModel.h"
+    #include "DLDelegate.h"
 
-	#include <QTableView>
-	#include <QKeyEvent>
+    #include <QTableView>
+    #include <QKeyEvent>
 
-	// This view displays the event list
-	class DLView : public QTableView {
-		Q_OBJECT
+    // This view displays the event list
+    class DLView : public QTableView {
+        Q_OBJECT
 
-		public:
-			DLView(QWidget *parent = 0);
-			~DLView();
+        public:
+            DLView(QWidget *parent = 0);
+            ~DLView();
 
-			DLModel *getModel() const;
+            DLModel *getModel() const;
 
-			void keyReleaseEvent(QKeyEvent *event);
+            void keyReleaseEvent(QKeyEvent *event);
 
-		private:
-			DLModel *dlModel;
-			DLDelegate *dlDelegate;
+        private:
+            DLModel *dlModel;
+            DLDelegate *dlDelegate;
 
-	};
+    };
 #endif // DLVIEW_H

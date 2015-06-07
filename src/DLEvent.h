@@ -17,37 +17,37 @@
 ****************************************************************************/
 
 #ifndef DLEVENT_H
-	#define DLEVENT_H
+    #define DLEVENT_H
 
-	#include <QString>
-	#include <QDate>
+    #include <QString>
+    #include <QDate>
 
-	// Defines a single 'Days Left' event
-	class DLEvent {
-		public:
-			DLEvent();
-			DLEvent(const QString &name, const QDate &date);
+    // Defines a single 'Days Left' event
+    class DLEvent {
+        public:
+            DLEvent();
+            DLEvent(const QString &name, const QDate &date);
 
-			QString getName() const;
-			QDate getDate() const;
+            QString getName() const;
+            QDate getDate() const;
 
-			void setName(const QString &newName);
-			void setDate(const QDate &newDate);
+            void setName(const QString &newName);
+            void setDate(const QDate &newDate);
 
-			int getDaysLeft() const;
+            int getDaysLeft() const;
 
-			// Comparator methods needed for sorting a list of events
-			static bool cmpNameAscending(const DLEvent &event1, const DLEvent &event2);
-			static bool cmpNameDescending(const DLEvent &event1, const DLEvent &event2);
+            // Comparator methods needed for sorting a list of events
+            static bool cmpNameAscending(const DLEvent &event1, const DLEvent &event2);
+            static bool cmpNameDescending(const DLEvent &event1, const DLEvent &event2);
 
-			static bool cmpDateAscending(const DLEvent &event1, const DLEvent &event2);
-			static bool cmpDateDescending(const DLEvent &event1, const DLEvent &event2);
+            static bool cmpDateAscending(const DLEvent &event1, const DLEvent &event2);
+            static bool cmpDateDescending(const DLEvent &event1, const DLEvent &event2);
 
-			static bool cmpDaysLeftAscending(const DLEvent &event1, const DLEvent &event2);
-			static bool cmpDaysLeftDescending(const DLEvent &event1, const DLEvent &event2);
+            static bool cmpDaysLeftAscending(const DLEvent &event1, const DLEvent &event2);
+            static bool cmpDaysLeftDescending(const DLEvent &event1, const DLEvent &event2);
 
-		private:
-			QString name; // event name
-			QDate date;   // when the event occurs
-	};
+        private:
+            QString name; // event name
+            QDate date;   // when the event occurs
+    };
 #endif // DLEVENT_H

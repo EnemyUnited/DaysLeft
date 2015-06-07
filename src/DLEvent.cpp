@@ -19,55 +19,55 @@
 #include "DLEvent.h"
 
 DLEvent::DLEvent() {
-	name = "Name";
-	date = QDate::currentDate();
+    name = "Name";
+    date = QDate::currentDate();
 }
 
 DLEvent::DLEvent(const QString &name, const QDate &date) {
-	this->name = name;
-	this->date = date;
+    this->name = name;
+    this->date = date;
 }
 
 QString DLEvent::getName() const {
-	return name;
+    return name;
 }
 
 QDate DLEvent::getDate() const {
-	return date;
+    return date;
 }
 
 void DLEvent::setName(const QString &newName) {
-	name = newName;
+    name = newName;
 }
 
 void DLEvent::setDate(const QDate &newDate) {
-	date = newDate;
+    date = newDate;
 }
 
 int DLEvent::getDaysLeft() const {
-	return QDate::currentDate().daysTo(date);
+    return QDate::currentDate().daysTo(date);
 }
 
 bool DLEvent::cmpNameAscending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getName() < event2.getName();
+    return event1.getName() < event2.getName();
 }
 
 bool DLEvent::cmpNameDescending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getName() > event2.getName();
+    return event1.getName() > event2.getName();
 }
 
 bool DLEvent::cmpDateAscending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getDate() < event2.getDate();
+    return event1.getDate() < event2.getDate();
 }
 
 bool DLEvent::cmpDateDescending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getDate() > event2.getDate();
+    return event1.getDate() > event2.getDate();
 }
 
 bool DLEvent::cmpDaysLeftAscending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getDaysLeft() < event2.getDaysLeft();
+    return event1.getDaysLeft() < event2.getDaysLeft();
 }
 
 bool DLEvent::cmpDaysLeftDescending(const DLEvent &event1, const DLEvent &event2) {
-	return event1.getDaysLeft() > event2.getDaysLeft();
+    return event1.getDaysLeft() > event2.getDaysLeft();
 }

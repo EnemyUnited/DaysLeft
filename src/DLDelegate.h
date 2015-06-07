@@ -17,21 +17,21 @@
 ****************************************************************************/
 
 #ifndef DLDELEGATE_H
-	#define DLDELEGATE_H
+    #define DLDELEGATE_H
 
-	#include <QStyledItemDelegate>
+    #include <QStyledItemDelegate>
 
-	class DLDelegate : public QStyledItemDelegate {
-		Q_OBJECT
+    class DLDelegate : public QStyledItemDelegate {
+        Q_OBJECT
 
-		public:
-			DLDelegate(QObject *parent = 0);
+        public:
+            DLDelegate(QObject *parent = 0);
 
-			QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+            QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
-			void setEditorData(QWidget *editor, const QModelIndex &index) const;
-			void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+            void setEditorData(QWidget *editor, const QModelIndex &index) const;
+            void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 
-			void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	};
+            void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    };
 #endif // DLDELEGATE_H
