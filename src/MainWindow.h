@@ -36,7 +36,7 @@
 
             QAction *saveListAct;
 
-            // Remember most recent opened file
+            // Remember most recently opened file
             QString openedFile;
 
 			// Widgets

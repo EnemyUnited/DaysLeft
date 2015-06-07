@@ -179,7 +179,7 @@ void MainWindow::onDLHelpAction() {
 	helpPage->setReadOnly(true);
     helpPage->setWindowTitle("DaysLeft " APPVERSTR " Help");
 	helpPage->setHtml(htmlText);
-	helpPage->resize(570, 450);
+    helpPage->resize(590, 440);
 	helpPage->show();
 }
 
