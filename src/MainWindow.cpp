@@ -250,7 +250,7 @@ void MainWindow::onDLHelpAction() {
     helpPage->setReadOnly(true);
     helpPage->setWindowTitle("DaysLeft " APPVERSTR " Help");
     helpPage->setHtml(htmlText);
-    helpPage->resize(590, 440);
+    helpPage->resize(590, 510);
     helpPage->show();
 }
 
